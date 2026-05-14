@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>House Rent Prediction - New Delhi</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #0b1220;
+            color: #ffffff;
+            margin: 0;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 760px;
+            margin: 0 auto;
+            background: #111827;
+            padding: 32px;
+            border-radius: 16px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #9ca3af;
+            margin-bottom: 30px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 12px;
+            border: 1px solid #374151;
+            border-radius: 8px;
+            background: #1f2937;
+            color: white;
+            box-sizing: border-box;
+        }
+
+        select option {
+            background: #1f2937;
+            color: white;
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            margin-top: 12px;
+            border: none;
+            border-radius: 8px;
+            background: #ec4899;
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        button:hover {
+            opacity: 0.95;
+        }
+
+        .result {
+            margin-top: 28px;
+            padding: 20px;
+            border-radius: 12px;
+            background: #052e16;
+            border: 1px solid #166534;
+            text-align: center;
+        }
+
+        .result h2 {
+            margin: 0;
+            font-size: 28px;
+            color: #4ade80;
+        }
+
+        @media (max-width: 768px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+
+            .container {
+                padding: 24px;
+            }
+        }
+    </style>
+</head>
+    <body>
+        <div class="container">
+            <h1>🏠 House Rent Prediction - New Delhi</h1>
+            <p class="subtitle">Predict rental prices instantly using Machine Learning.</p>
+
+            <form method="POST" action="/predict">
+                <div class="form-grid">
+
+                    <!-- House Size -->
+                    <div class="form-group">
+                        <label>House Size (BHK)</label>
+                        <input type="number" name="Size"
+                            value="{{ form_data.get('Size', '') }}"
+                            required>
+                    </div>
+
+                    <!-- Area -->
+                    <div class="form-group">
+                        <label>Area (sqft)</label>
+                        <input type="number" name="Area_sqft"
+                            value="{{ form_data.get('Area_sqft', '') }}"
+                            required>
+                    </div>
+
+                    <!-- Seller Type -->
+                    <div class="form-group">
+                        <label>Seller Type</label>
+                        <select name="Seller_type" required>
+                            <option value="Owner"
+                                {% if form_data.get('Seller_type') == 'Owner' %}selected{% endif %}>
+                                Owner
+                            </option>
+                            <option value="Agent"
+                                {% if form_data.get('Seller_type') == 'Agent' %}selected{% endif %}>
+                                Agent
+                            </option>
+                            <option value="Builder"
+                                {% if form_data.get('Seller_type') == 'Builder' %}selected{% endif %}>
+                                Builder
+                            </option>
+                        </select>
+                    </div>
+
+                    <!-- Size Unit -->
+                    <div class="form-group">
+                        <label>Size Unit</label>
+                        <select name="Size_unit" required>
+                            <option value="BHK"
+                                {% if form_data.get('Size_unit') == 'BHK' %}selected{% endif %}>
+                                BHK
+                            </option>
+                            <option value="RK"
+                                {% if form_data.get('Size_unit') == 'RK' %}selected{% endif %}>
+                                RK
+                            </option>
+                        </select>
+                    </div>
+
+                    <!-- Bathrooms -->
+                    <div class="form-group">
+                        <label>Bathrooms</label>
+                        <input type="number" name="Bathroom"
+                            value="{{ form_data.get('Bathroom', '') }}"
+                            required>
+                    </div>
+
+                    <!-- Location -->
+                    <div class="form-group">
+                        <label>Location</label>
+                        <input type="text" name="Location"
+                            value="{{ form_data.get('Location', '') }}"
+                            placeholder="e.g. Hauz Khas"
+                            required>
+                    </div>
+
+                    <!-- Property Type -->
+                    <div class="form-group">
+                        <label>Property Type</label>
+                        <select name="Property_type" required>
+                            <option value="Apartment"
+                                {% if form_data.get('Property_type') == 'Apartment' %}selected{% endif %}>
+                                Apartment
+                            </option>
+                            <option value="Builder Floor"
+                                {% if form_data.get('Property_type') == 'Builder Floor' %}selected{% endif %}>
+                                Builder Floor
+                            </option>
+                            <option value="Villa"
+                                {% if form_data.get('Property_type') == 'Villa' %}selected{% endif %}>
+                                Villa
+                            </option>
+                            <option value="Independent House"
+                                {% if form_data.get('Property_type') == 'Independent House' %}selected{% endif %}>
+                                Independent House
+                            </option>
+                            <option value="Studio Apartment"
+                                {% if form_data.get('Property_type') == 'Studio Apartment' %}selected{% endif %}>
+                                Studio Apartment
+                            </option>
+                        </select>
+                    </div>
+
+                    <!-- Furnishing Status -->
+                    <div class="form-group">
+                        <label>Furnishing Status</label>
+                        <select name="Status" required>
+                            <option value="Furnished"
+                                {% if form_data.get('Status') == 'Furnished' %}selected{% endif %}>
+                                Furnished
+                            </option>
+                            <option value="Semi-Furnished"
+                                {% if form_data.get('Status') == 'Semi-Furnished' %}selected{% endif %}>
+                                Semi-Furnished
+                            </option>
+                            <option value="Unfurnished"
+                                {% if form_data.get('Status') == 'Unfurnished' %}selected{% endif %}>
+                                Unfurnished
+                            </option>
+                        </select>
+                    </div>
+
+                    <!-- Facing Direction -->
+                    <div class="form-group">
+                        <label>Facing Direction</label>
+                        <select name="Facing_direction" required>
+                            <option value="East"
+                                {% if form_data.get('Facing_direction') == 'East' %}selected{% endif %}>
+                                East
+                            </option>
+                            <option value="West"
+                                {% if form_data.get('Facing_direction') == 'West' %}selected{% endif %}>
+                                West
+                            </option>
+                            <option value="North"
+                                {% if form_data.get('Facing_direction') == 'North' %}selected{% endif %}>
+                                North
+                            </option>
+                            <option value="South"
+                                {% if form_data.get('Facing_direction') == 'South' %}selected{% endif %}>
+                                South
+                            </option>
+                            <option value="NorthEast"
+                                {% if form_data.get('Facing_direction') == 'NorthEast' %}selected{% endif %}>
+                                NorthEast
+                            </option>
+                            <option value="NorthWest"
+                                {% if form_data.get('Facing_direction') == 'NorthWest' %}selected{% endif %}>
+                                NorthWest
+                            </option>
+                            <option value="SouthEast"
+                                {% if form_data.get('Facing_direction') == 'SouthEast' %}selected{% endif %}>
+                                SouthEast
+                            </option>
+                            <option value="SouthWest"
+                                {% if form_data.get('Facing_direction') == 'SouthWest' %}selected{% endif %}>
+                                SouthWest
+                            </option>
+                        </select>
+                    </div>
+                </div>
+
+                <button type="submit">Predict Rent</button>
+            </form>
+
+            {% if prediction %}
+            <div class="result">
+                Estimated Rent: ₹ {{ prediction }} / month
+            </div>
+            {% endif %}
+        </div>
+    </body>
+</html>
